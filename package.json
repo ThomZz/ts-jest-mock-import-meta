@@ -1,0 +1,31 @@
+{
+  "name": "ts-jest-mock-import-meta",
+  "version": "0.12.0",
+  "description": "A simple Typescript AST transformer for ts-jest, that mock import.meta expressions.",
+  "keywords": ["ts-jest", "jest", "transformer", "AST", "import.meta"],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --no-cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThomZz/ts-jest-mock-import-meta.git"
+  },
+  "peerDependencies": {
+    "ts-jest": ">=20.0.0"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Thomas-Louis Simard",
+  "license": "MIT",
+  "files": ["dist/index.js", "dist/index.d.ts","package.json", "README.md"],
+  "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "esbuild": "^0.14.43",
+    "jest": "^28.0.0",
+    "rollup": "^2.75.6",
+    "ts-jest": "^28.0.4",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  }
+}
