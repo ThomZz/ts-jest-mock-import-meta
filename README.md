@@ -13,7 +13,7 @@ That moment finally came, where you want to test your esm code that use "import.
  FAIL  src/anyfile.spec.ts
   ● Test suite failed to run
 
-    src/foo.ts:2:24 - error TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'esnext', or 'system'.
+    src/anyfile.spec.ts:2:24 - error TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'esnext', or 'system'.
 
     2   const url = new URL('./', import.meta.url) !== undefined;
                              ~~~~~~~~~~~
@@ -22,28 +22,58 @@ That moment finally came, where you want to test your esm code that use "import.
 
 Here comes this simple typescript AST transformer to the rescue. 
 By using it "before" typescript transpilation, it will simply replace any "import.meta" expressions in typescript files by a mocked object.
-"import.meta" expressions are not compatible with jest, that by default, works in commonjs, so they need to be stripped down and replaced by a mocked object **before** transpilation is done by ts-jest.
+"import.meta" expressions are not compatible with jest, that by default, works in commonjs, so they need to be stripped down and replaced by a mocked object **before** typescript transpilation is done by ts-jest.
 
-Here's an example on how you can configure jest (**jest.config**) :
+ ### Configuration examples (**jest.config**) :
+ >For ts-jest  **>= 29.0.0**
 ```javascript
-globals: {
-  'ts-jest': {
+{
+  // [...]
+  transform: {
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        diagnostics: {
+          ignoreCodes: [1343]
+        },
+        astTransformers: {
+          before: [
+            {
+              path: 'node_modules/ts-jest-mock-import-meta',  // or, alternatively, 'ts-jest-mock-import-meta' directly, without node_modules.
+              options: { metaObjectReplacement: { url: 'https://www.url.com' } }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+ > For ts-jest  **< 29.0.0**
+```javascript
+{
+  // [...]
+  globals: {
+    'ts-jest': {
       diagnostics: {
         ignoreCodes: [1343]
       },
       astTransformers: {
         before: [
           {
-              path: 'node_modules/ts-jest-mock-import-meta',
-              options: { metaObjectReplacement: { url: 'https://www.url.com' } }
+            path: 'node_modules/ts-jest-mock-import-meta',  // or, alternatively, 'ts-jest-mock-import-meta' directly, without node_modules.
+            options: { metaObjectReplacement: { url: 'https://www.url.com' } }
           }
-        ],
+        ]
       }
     }
+  }
 }
-````
+```
 > :warning: IMPORTANT: error code 1343 MUST be ignored for the transformer to work.
 > https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json#L1035
+
+> See *ts-jest* options documentation for more details about configuration  : https://kulshekhar.github.io/ts-jest/docs/getting-started/options
 
 ## Options
 

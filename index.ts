@@ -22,6 +22,26 @@ const defaultMetaObjectReplacement = {
  *
  * ex (jest.config):
  * ````
+ * // ts-jest >= 29.0.0
+ * transform: {
+ *    '^.+\\.tsx?$': [
+ *      'ts-jest',
+ *      {
+ *        diagnostics: {
+ *          ignoreCodes: [1343]
+ *        },
+ *        astTransformers: {
+ *          before: [
+ *            {
+ *             path: 'node_modules/ts-jest-mock-import-meta',  // or, alternatively, 'ts-jest-mock-import-meta' directly, without node_modules.
+ *              options: { metaObjectReplacement: { url: 'https://www.url.com' } }
+ *            }
+ *          ]
+ *        }
+ *      }
+ *    ]
+ * }
+ * // ts-jest < 29.0.0
  * globals: {
  *   'ts-jest': {
  *      diagnostics: {
@@ -30,10 +50,10 @@ const defaultMetaObjectReplacement = {
  *      astTransformers: {
  *        before: [
  *          {
- *              path: 'node_modules/ts-jest-mock-import-meta',
+ *              path: 'node_modules/ts-jest-mock-import-meta',  // or, alternatively, 'ts-jest-mock-import-meta' directly, without 
  *              options: { metaObjectReplacement: { url: 'anyValidUrl' } }
  *          }
- *        ],
+ *        ]
  *      }
  *    }
  * }
