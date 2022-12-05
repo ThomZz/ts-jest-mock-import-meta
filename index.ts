@@ -82,7 +82,7 @@ export function factory(compiler: TsCompilerInstance, options?: Options): ts.Tra
     return transformer;
 }
 
-const createPropertyAssignmentValue = (value: any) => {
+const createPropertyAssignmentValue = (key: string, value: any) => {
     switch(typeof value) {
         case "number":
             return ts.factory.createNumericLiteral(value);
@@ -93,7 +93,7 @@ const createPropertyAssignmentValue = (value: any) => {
         case "object":
             return ts.factory.createObjectLiteralExpression(createImportMetaReplacement(value));
         default:
-            throw new Error(`[${name}]: Unsupported property type.`);
+            throw new Error(`Property '${key}': value '${value}' type '${typeof value}' is not supported.`);
     }
 };
 
@@ -101,7 +101,7 @@ const createImportMetaReplacement = (replacementObj: Record<string, any>) => {
     return Object.entries(replacementObj).reduce((previous, [key, value]) => {
         previous.push(ts.factory.createPropertyAssignment(
             ts.factory.createIdentifier(key),
-            createPropertyAssignmentValue(value)
+            createPropertyAssignmentValue(key, value)
         ));
         return previous;
     }, [] as ts.PropertyAssignment[]);
