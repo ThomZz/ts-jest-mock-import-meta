@@ -16,7 +16,7 @@ const mockImportMetaTransformer: AstTransformer<Options> = {
 }
 
 const config: InitialOptionsTsJest = {
-  testMatch: ["**/src/**/*.spec.ts"],
+  testMatch: ["**/tests/**/*.spec.ts"],
   transform: {
     "^.+\\.(t|j)s$": "ts-jest",
   },

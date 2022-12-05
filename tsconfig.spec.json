@@ -5,5 +5,5 @@
       "jest"
     ]
   },
-  "files": ["src/**/*.spec.ts", "src/**/*.d.ts"]
+  "files": ["tests/**/*.spec.ts", "tests/**/*.d.ts"]
 }

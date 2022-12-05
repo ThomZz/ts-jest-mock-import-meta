@@ -1,5 +1,3 @@
-
-
 export function getUrl(): URL {
   return new URL(import.meta.url);
 }
