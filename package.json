@@ -2,8 +2,15 @@
   "name": "ts-jest-mock-import-meta",
   "version": "1.0.0",
   "description": "A simple Typescript AST transformer for ts-jest, that mock import.meta expressions.",
-  "keywords": ["ts-jest", "jest", "transformer", "AST", "import.meta"],
+  "keywords": [
+    "ts-jest",
+    "jest",
+    "transformer",
+    "AST",
+    "import.meta"
+  ],
   "scripts": {
+    "release": "tsc && esbuild dist/index.js --minify --outfile=dist/index.min.js",
     "build": "tsc",
     "test": "jest --no-cache"
   },
@@ -14,11 +21,16 @@
   "peerDependencies": {
     "ts-jest": ">=20.0.0"
   },
-  "main": "dist/index.js",
+  "main": "dist/index.min.js",
   "types": "dist/index.d.ts",
   "author": "Thomas-Louis Simard",
   "license": "MIT",
-  "files": ["dist/index.js", "dist/index.d.ts","package.json", "README.md"],
+  "files": [
+    "dist/index.min.js",
+    "dist/index.d.ts",
+    "package.json",
+    "README.md"
+  ],
   "devDependencies": {
     "@types/jest": "^28.1.1",
     "esbuild": "^0.14.43",
