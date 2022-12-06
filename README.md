@@ -22,10 +22,19 @@ That moment finally came, where you want to test your esm code that use "import.
 
 Here comes this simple typescript AST transformer to the rescue. 
 By using it "before" typescript transpilation, it will simply replace any "import.meta" expressions in typescript files by a mocked object.
-"import.meta" expressions are not compatible with jest, that by default, works in commonjs, so they need to be stripped down and replaced by a mocked object **before** typescript transpilation is done by ts-jest.
+"import.meta" expressions are not compatible with *jest*, that by default, works in commonjs, so they need to be stripped down and replaced by a mocked object **before** typescript transpilation is done by *ts-jest*.
 
  ### Configuration examples (**jest.config**) :
- >For ts-jest  **>= 29.0.0**
+> 📘 See *ts-jest* options documentation for more details about configuration  : https://kulshekhar.github.io/ts-jest/docs/getting-started/options
+
+> ℹ️ Options structure changed since *ts-jest* 29.0.0. Make sure to check the example that corresponds to the version of *ts-jest* you are using.
+
+> ⚠️ **IMPORTANT**: error code 1343 MUST be ignored for the transformer to work.
+> https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json#L1035
+
+<details open>
+ <summary><h3>ts-jest >= 29.0.0</h3></summary>
+ 
 ```javascript
 {
   // [...]
@@ -49,7 +58,11 @@ By using it "before" typescript transpilation, it will simply replace any "impor
   }
 }
 ```
- > For ts-jest  **< 29.0.0**
+</details>
+
+<details>
+ <summary><h3>ts-jest < 29.0.0</h3></summary>
+
 ```javascript
 {
   // [...]
@@ -70,10 +83,7 @@ By using it "before" typescript transpilation, it will simply replace any "impor
   }
 }
 ```
-> :warning: IMPORTANT: error code 1343 MUST be ignored for the transformer to work.
-> https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json#L1035
-
-> See *ts-jest* options documentation for more details about configuration  : https://kulshekhar.github.io/ts-jest/docs/getting-started/options
+</details>
 
 ## Options
 
