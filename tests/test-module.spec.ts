@@ -1,4 +1,4 @@
-import { getEnv, getFlag, getNumber, getUrl } from './test-module';
+import { getEnv, getSpec, getFlag, getNumber, getUrl, getExpiration } from './test-module';
 
 describe('getUrl', () => {
   it('Should return replaced path.', () => {
@@ -12,6 +12,12 @@ describe('getEnv', () => {
   });
 });
 
+describe('getSpec', () => {
+  it('Should return replaced spec.', () => {
+    expect(getSpec()).toMatchObject({ descriptor: 'aaaaaa' });
+  });
+});
+
 describe('getFlag', () => {
   it('Should return replaced flag.', () => {
     expect(getFlag()).toBe(false);
@@ -21,5 +27,11 @@ describe('getFlag', () => {
 describe('getNumber', () => {
   it('Should return replaced number.', () => {
     expect(getNumber()).toEqual(333);
+  });
+});
+
+describe('getExpiration', () => {
+  it('Should return a value < than current time.', () => {
+    expect(getExpiration()).toBeLessThan(new Date().getTime());
   });
 });

@@ -3,13 +3,21 @@ export function getUrl(): URL {
 }
 
 export function getEnv(): any {
-  return (import.meta as any).env;
+  return import.meta.env;
+}
+
+export function getSpec(): any {
+  return import.meta.spec;
 }
 
 export function getNumber(): number {
-  return (import.meta as any).number;
+  return import.meta.number;
+}
+
+export function getExpiration(): number {
+  return import.meta.expiration;
 }
 
 export function getFlag(): boolean {
-  return (import.meta as any).flag;
+  return import.meta.flag;
 }

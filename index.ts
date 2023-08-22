@@ -1,12 +1,12 @@
 import type { TsCompilerInstance } from 'ts-jest';
 import ts from 'typescript';
 
-export const version = '1.0';
+export const version = '1.1';
 
 export const name = 'ts-jest-mock-import-meta';
 
 export interface Options extends Record<string, unknown> {
-    readonly metaObjectReplacement: Record<string, any>;
+    readonly metaObjectReplacement: Record<string, any> | (() => Record<string, any>);
 }
 
 const defaultMetaObjectReplacement = {
@@ -76,28 +76,32 @@ export function factory(compiler: TsCompilerInstance, options?: Options): ts.Tra
                 return ts.visitEachChild(node, visitor, context);
             };
 
-            return ts.visitNode(sourceFile, visitor);
+            return ts.visitNode(sourceFile, visitor) as ts.SourceFile;
         };
     };
     return transformer;
 }
 
 const createPropertyAssignmentValue = (key: string, value: any) => {
-    switch(typeof value) {
+    let resolvedValue = typeof value === 'function' ? value() : value;
+    switch(typeof resolvedValue) {
         case "number":
-            return ts.factory.createNumericLiteral(value);
+            return ts.factory.createNumericLiteral(resolvedValue);
         case "string":
-            return ts.factory.createStringLiteral(value);
+            return ts.factory.createStringLiteral(resolvedValue);
         case "boolean":
-            return value ? ts.factory.createTrue() : ts.factory.createFalse();
+            return resolvedValue ? ts.factory.createTrue() : ts.factory.createFalse();
         case "object":
-            return ts.factory.createObjectLiteralExpression(createImportMetaReplacement(value));
+            return ts.factory.createObjectLiteralExpression(createImportMetaReplacement(resolvedValue));
         default:
-            throw new Error(`Property '${key}': value '${value}' type '${typeof value}' is not supported.`);
+            throw new Error(`Property '${key}': value '${resolvedValue}' type '${typeof resolvedValue}' is not supported.`);
     }
 };
 
-const createImportMetaReplacement = (replacementObj: Record<string, any>) => {
+function createImportMetaReplacement(replacement: Record<string, any>): ts.PropertyAssignment[]
+function createImportMetaReplacement(replacement: () => Record<string, any>): ts.PropertyAssignment[]
+function createImportMetaReplacement(replacement: Record<string, any> | (() => Record<string, any>)): ts.PropertyAssignment[] {
+    let replacementObj = typeof replacement === 'object' ? replacement : replacement();
     return Object.entries(replacementObj).reduce((previous, [key, value]) => {
         previous.push(ts.factory.createPropertyAssignment(
             ts.factory.createIdentifier(key),

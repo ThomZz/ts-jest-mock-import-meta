@@ -88,12 +88,22 @@ By using it "before" typescript transpilation, it will simply replace any "impor
 ## Options
 
 - ### [metaObjectReplacement]:
+  **[Type]** Object or Function
 
   **[Optional]** *The mocked object that will substitute every "import.meta" expressions.*
   It can contains any properties.
   example :
   ````javascript
   {
+    url: 'https://www.url.com',
+    env: {
+      PROD: false,
+      DEV: true
+    },
+    status: 2
+  }
+  // Alternatively, a factory function returning an object can be provided.
+  () => {
     url: 'https://www.url.com',
     env: {
       PROD: false,
