@@ -5,12 +5,14 @@ export const version = '1.1';
 
 export const name = 'ts-jest-mock-import-meta';
 
+type ReplacementFunctionContext = { fileName: string }
+type ReplacementFunction = (context: ReplacementFunctionContext) => Record<string, any>
 export interface Options extends Record<string, unknown> {
-    readonly metaObjectReplacement: Record<string, any> | (() => Record<string, any>);
+    readonly metaObjectReplacement: Record<string, any> | ReplacementFunction;
 }
 
 const defaultMetaObjectReplacement = {
-    url: __dirname
+    url: ({ fileName }) => `file://${fileName}`
 };
 
 /**
@@ -71,7 +73,10 @@ export function factory(compiler: TsCompilerInstance, options?: Options): ts.Tra
         return sourceFile => {
             const visitor = (node: ts.Node): ts.Node => {
                 if (isImportMeta(node)) {
-                    return ts.factory.createObjectLiteralExpression(createImportMetaReplacement(options?.metaObjectReplacement ?? defaultMetaObjectReplacement));
+                    return ts.factory.createObjectLiteralExpression(createImportMetaReplacement(
+                        options?.metaObjectReplacement ?? defaultMetaObjectReplacement,
+                        { fileName: sourceFile.fileName }
+                    ));
                 }
                 return ts.visitEachChild(node, visitor, context);
             };
@@ -82,8 +87,8 @@ export function factory(compiler: TsCompilerInstance, options?: Options): ts.Tra
     return transformer;
 }
 
-const createPropertyAssignmentValue = (key: string, value: any) => {
-    let resolvedValue = typeof value === 'function' ? value() : value;
+const createPropertyAssignmentValue = (key: string, value: any, context: ReplacementFunctionContext) => {
+    let resolvedValue = typeof value === 'function' ? value(context) : value;
     switch(typeof resolvedValue) {
         case "number":
             return ts.factory.createNumericLiteral(resolvedValue);
@@ -92,20 +97,20 @@ const createPropertyAssignmentValue = (key: string, value: any) => {
         case "boolean":
             return resolvedValue ? ts.factory.createTrue() : ts.factory.createFalse();
         case "object":
-            return ts.factory.createObjectLiteralExpression(createImportMetaReplacement(resolvedValue));
+            return ts.factory.createObjectLiteralExpression(createImportMetaReplacement(resolvedValue, context));
         default:
             throw new Error(`Property '${key}': value '${resolvedValue}' type '${typeof resolvedValue}' is not supported.`);
     }
 };
 
-function createImportMetaReplacement(replacement: Record<string, any>): ts.PropertyAssignment[]
-function createImportMetaReplacement(replacement: () => Record<string, any>): ts.PropertyAssignment[]
-function createImportMetaReplacement(replacement: Record<string, any> | (() => Record<string, any>)): ts.PropertyAssignment[] {
-    let replacementObj = typeof replacement === 'object' ? replacement : replacement();
+function createImportMetaReplacement(replacement: Record<string, any>, context: ReplacementFunctionContext): ts.PropertyAssignment[]
+function createImportMetaReplacement(replacement: ReplacementFunction, context: ReplacementFunctionContext): ts.PropertyAssignment[]
+function createImportMetaReplacement(replacement: Record<string, any> | ReplacementFunction, context: ReplacementFunctionContext): ts.PropertyAssignment[] {
+    let replacementObj = typeof replacement === 'object' ? replacement : replacement(context);
     return Object.entries(replacementObj).reduce((previous, [key, value]) => {
         previous.push(ts.factory.createPropertyAssignment(
             ts.factory.createIdentifier(key),
-            createPropertyAssignmentValue(key, value)
+            createPropertyAssignmentValue(key, value, context)
         ));
         return previous;
     }, [] as ts.PropertyAssignment[]);
