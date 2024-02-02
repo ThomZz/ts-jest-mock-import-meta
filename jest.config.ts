@@ -4,8 +4,9 @@ import { Options } from "./index";
 const mockImportMetaTransformer: AstTransformer<Options> = {
   path: 'index.ts',
   options: {
-    metaObjectReplacement: () => ({
+    metaObjectReplacement: ({fileName}) => ({
       url: "https://www.mydummyurl.com/",
+      fileName,
       env: {
         DEV: true
       },

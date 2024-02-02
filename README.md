@@ -87,32 +87,44 @@ By using it "before" typescript transpilation, it will simply replace any "impor
 
 ## Options
 
-- ### [metaObjectReplacement]:
-  **[Type]** Object or Function
+- ### [metaObjectReplacement] (Optional):
+  *The mock object or factory function that (the returned value for the latter) will override all "import.meta" expressions. Note that the factory function and all function properties will be called with the replacement context as an argument, and it will always be the returned value that will be used.*
 
-  **[Optional]** *The mocked object that will substitute every "import.meta" expressions.*
-  It can contains any properties.
-  example :
-  ````javascript
-  {
-    url: 'https://www.url.com',
-    env: {
-      PROD: false,
-      DEV: true
-    },
-    status: 2
-  }
-  // Alternatively, a factory function returning an object can be provided.
-  () => {
-    url: 'https://www.url.com',
-    env: {
-      PROD: false,
-      DEV: true
-    },
-    status: 2
-  }
-  ````
+    **[Type]** Record<string, any> or (ctx: ReplacementContext) => Record<string, any>
+
+    ````javascript
+    /** @type {ReplacementContext} */
+    { 
+      fileName: string 
+    }
+    ````
+
   **[Default Value]**
   ````javascript
-  { url: __dirname }
+  { url: ({ fileName }) => `file://${fileName}` };
+  ````
+
+    **[Example Values]**
+    ````javascript
+    // An object
+    {
+      url: 'https://www.url.com',
+      env: {
+        PROD: false,
+        DEV: true
+      },
+      status: 2,
+      file: ({fileName}) => fileName
+    }
+  ````
+  ````javascript
+  // A factory function
+  ({ fileName }) => ({
+    url: fileName,
+    env: {
+      PROD: false,
+      DEV: true
+    },
+    status: 2
+  })
   ````

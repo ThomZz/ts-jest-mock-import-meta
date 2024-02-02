@@ -1,6 +1,6 @@
 {
   "name": "ts-jest-mock-import-meta",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A simple Typescript AST transformer for ts-jest, that mock import.meta expressions.",
   "keywords": [
     "ts-jest",
