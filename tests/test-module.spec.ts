@@ -1,4 +1,4 @@
-import { getEnv, getSpec, getFlag, getNumber, getUrl, getExpiration } from './test-module';
+import { getEnv, getSpec, getFlag, getNumber, getUrl, getExpiration, getFileName } from './test-module';
 
 describe('getUrl', () => {
   it('Should return replaced path.', () => {
@@ -9,6 +9,12 @@ describe('getUrl', () => {
 describe('getEnv', () => {
   it('Should return replaced env.', () => {
     expect(getEnv()).toMatchObject({ DEV: true });
+  });
+});
+
+describe('getFileName', () => {
+  it('Should return contextual file name, with its absolute path', () => {
+    expect(getFileName()).toEqual(`${__dirname}/test-module.ts`);
   });
 });
 

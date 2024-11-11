@@ -2,6 +2,10 @@ export function getUrl(): URL {
   return new URL(import.meta.url);
 }
 
+export function getFileName(): string {
+  return import.meta.fileName;
+}
+
 export function getEnv(): any {
   return import.meta.env;
 }

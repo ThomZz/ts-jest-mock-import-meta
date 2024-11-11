@@ -1,8 +1,9 @@
 declare interface ImportMeta {
-  env?: { DEV: boolean }
-  spec: Record<string, any>,
-  number: number,
+  env?: { DEV: boolean };
+  fileName: string;
+  spec: Record<string, any>;
+  number: number;
   expiration: number;
-  flag: boolean
+  flag: boolean;
 }
 
