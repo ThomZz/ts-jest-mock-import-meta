@@ -128,3 +128,6 @@ By using it "before" typescript transpilation, it will simply replace any "impor
     status: 2
   })
   ````
+___
+
+If you found this project helpful, please consider giving it a ⭐! Your support means a lot and helps others discover this repository too.
