@@ -47,4 +47,3 @@ describe('getResolve', () => {
     expect(getResolve()).toEqual('https://www.mydummyurl.com/my.jpg');
   });
 });
-
