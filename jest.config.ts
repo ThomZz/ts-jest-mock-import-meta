@@ -1,5 +1,6 @@
 import type { AstTransformer, JestConfigWithTsJest } from 'ts-jest';
 import { Options } from "./index";
+import { basename } from "path";
 
 const mockImportMetaTransformer: AstTransformer<Options> = {
   path: 'index.ts',
@@ -19,7 +20,18 @@ const mockImportMetaTransformer: AstTransformer<Options> = {
       },
       number: 333,
       expiration: () => new Date().getTime(),
-      flag: false
+      flag: false,
+      // NOTE: for resolve only static conversions based on source code filename are supported for now.
+      resolve: () => {
+        switch(basename(fileName)) {
+          case "test-module.ts":
+            return "https://www.mydummyurl.com/my.jpg";
+          default:
+            return "";
+        }
+      },
+      // NOTE: not supported:
+      // resolve: () => (moduleName: string)=>`https://www.mydummyurl.com/${moduleName.split("/").pop()}`,
     })
   }
 }

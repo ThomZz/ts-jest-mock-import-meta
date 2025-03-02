@@ -25,3 +25,7 @@ export function getExpiration(): number {
 export function getFlag(): boolean {
   return import.meta.flag;
 }
+
+export function getResolve(): string {
+  return import.meta.resolve(`../../image.jpg`);
+}
