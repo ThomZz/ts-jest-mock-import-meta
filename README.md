@@ -24,9 +24,6 @@ Here comes this simple typescript AST transformer to the rescue.
 By using it "before" typescript transpilation, it will simply replace any "import.meta" expressions in typescript files by a mocked object.
 "import.meta" expressions are not compatible with *jest*, that by default, works in commonjs, so they need to be stripped down and replaced by a mocked object **before** typescript transpilation is done by *ts-jest*.
 
-There is a special basic support for `import.meta.resolve` function: mock can be done but argument value
-is ignored. Instead source filename can be used to provide different mock results for different cases.
-
  ### Configuration examples (**jest.config**) :
 > 📘 See *ts-jest* options documentation for more details about configuration  : https://kulshekhar.github.io/ts-jest/docs/getting-started/options
 
@@ -92,6 +89,8 @@ is ignored. Instead source filename can be used to provide different mock result
 
 - ### [metaObjectReplacement] (Optional):
   *The mock object or factory function that (the returned value for the latter) will override all "import.meta" expressions. Note that the factory function and all function properties will be called with the replacement context as an argument, and it will always be the returned value that will be used.*
+
+  > There is a special basic support for `import.meta.resolve` function. mock can be done but argument value is ignored. Instead, source filename can be used to provide different mock results for different cases.
 
     **[Type]** Record<string, any> or (ctx: ReplacementContext) => Record<string, any>
 
