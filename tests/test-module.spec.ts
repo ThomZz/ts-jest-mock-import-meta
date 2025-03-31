@@ -1,4 +1,4 @@
-import { getEnv, getSpec, getFlag, getNumber, getUrl, getExpiration, getFileName } from './test-module';
+import { getEnv, getSpec, getFlag, getNumber, getUrl, getExpiration, getFileName, getResolve } from './test-module';
 
 describe('getUrl', () => {
   it('Should return replaced path.', () => {
@@ -39,5 +39,11 @@ describe('getNumber', () => {
 describe('getExpiration', () => {
   it('Should return a value < than current time.', () => {
     expect(getExpiration()).toBeLessThan(new Date().getTime());
+  });
+});
+
+describe('getResolve', () => {
+  it('Should return absolute URL for relative path to static file.', () => {
+    expect(getResolve()).toEqual('https://www.mydummyurl.com/my.jpg');
   });
 });

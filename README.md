@@ -24,6 +24,9 @@ Here comes this simple typescript AST transformer to the rescue.
 By using it "before" typescript transpilation, it will simply replace any "import.meta" expressions in typescript files by a mocked object.
 "import.meta" expressions are not compatible with *jest*, that by default, works in commonjs, so they need to be stripped down and replaced by a mocked object **before** typescript transpilation is done by *ts-jest*.
 
+There is a special basic support for `import.meta.resolve` function: mock can be done but argument value
+is ignored. Instead source filename can be used to provide different mock results for different cases.
+
  ### Configuration examples (**jest.config**) :
 > 📘 See *ts-jest* options documentation for more details about configuration  : https://kulshekhar.github.io/ts-jest/docs/getting-started/options
 
@@ -114,6 +117,16 @@ By using it "before" typescript transpilation, it will simply replace any "impor
         DEV: true
       },
       status: 2,
+      resolve: ({fileName}) => {
+        switch(basename(fileName)) {
+          case "test-module.ts":
+            return "https://www.mydummyurl.com/my.jpg";
+          case "test-module2.ts":
+            return "https://www.mydummyurl.com/my2.jpg";
+          default:
+            return "";
+        }
+      },
       file: ({fileName}) => fileName
     }
   ````
@@ -125,6 +138,16 @@ By using it "before" typescript transpilation, it will simply replace any "impor
       PROD: false,
       DEV: true
     },
+    resolve: () => {
+      switch(basename(fileName)) {
+        case "test-module.ts":
+          return "https://www.mydummyurl.com/my.jpg";
+        case "test-module2.ts":
+          return "https://www.mydummyurl.com/my2.jpg";
+        default:
+          return "";
+      }
+  },
     status: 2
   })
   ````

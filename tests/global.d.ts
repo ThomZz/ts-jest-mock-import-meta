@@ -5,5 +5,5 @@ declare interface ImportMeta {
   number: number;
   expiration: number;
   flag: boolean;
+  resolve: (moduleName: string) => string;
 }
-

@@ -93,6 +93,9 @@ const createPropertyAssignmentValue = (key: string, value: any, context: Replace
         case "number":
             return ts.factory.createNumericLiteral(resolvedValue);
         case "string":
+            if (key === "resolve") {
+                return metaResolve(resolvedValue);
+            }
             return ts.factory.createStringLiteral(resolvedValue);
         case "boolean":
             return resolvedValue ? ts.factory.createTrue() : ts.factory.createFalse();
@@ -102,6 +105,35 @@ const createPropertyAssignmentValue = (key: string, value: any, context: Replace
             throw new Error(`Property '${key}': value '${resolvedValue}' type '${typeof resolvedValue}' is not supported.`);
     }
 };
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import.meta/resolve
+function metaResolve(resolvedValue: string): ts.ArrowFunction {
+    const parameters = [
+        ts.factory.createParameterDeclaration(
+          undefined, // modifiers
+          undefined, // dotDotDotToken
+          ts.factory.createIdentifier("moduleName"), // name
+          undefined, // questionToken (optional)
+          ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword), // type
+          undefined // initializer
+        ),
+    ];
+
+    // TODO: allow more complex bodies
+    const returnStatement = ts.factory.createReturnStatement(
+      ts.factory.createStringLiteral(resolvedValue)
+    );
+    const bodyBlock = ts.factory.createBlock([returnStatement], true);
+
+    return ts.factory.createArrowFunction(
+      undefined, // modifiers
+      undefined, // type parameters
+      parameters, // parameters
+      ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword), // return type
+      ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), // `=>` token
+      bodyBlock,
+    );
+}
 
 function createImportMetaReplacement(replacement: Record<string, any>, context: ReplacementFunctionContext): ts.PropertyAssignment[]
 function createImportMetaReplacement(replacement: ReplacementFunction, context: ReplacementFunctionContext): ts.PropertyAssignment[]
