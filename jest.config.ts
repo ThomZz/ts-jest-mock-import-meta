@@ -1,3 +1,4 @@
+/** @jest-config-loader ts-node */
 import type { AstTransformer, JestConfigWithTsJest } from 'ts-jest';
 import { Options } from "./index";
 import { basename } from "path";
